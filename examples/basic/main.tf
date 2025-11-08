@@ -1,15 +1,15 @@
 terraform {
   required_providers {
-    spantree_utils = {
+    utils = {
       source = "spantree/utils"
     }
   }
 }
 
-provider "spantree_utils" {}
+provider "utils" {}
 
 # Basic example: Simple string interpolation
-data "spantree_utils_render_template" "greeting" {
+data "utils_render_template" "greeting" {
   template = "Hello @@NAME@@, welcome to @@PLACE@@!"
 
   values = {
@@ -19,11 +19,11 @@ data "spantree_utils_render_template" "greeting" {
 }
 
 output "greeting" {
-  value = data.spantree_utils_render_template.greeting.result
+  value = data.utils_render_template.greeting.result
 }
 
 # Example: Configuration file with multiple variables
-data "spantree_utils_render_template" "config" {
+data "utils_render_template" "config" {
   template = <<-EOT
     server {
       host = "@@HOST@@"
@@ -45,11 +45,11 @@ data "spantree_utils_render_template" "config" {
 }
 
 output "config" {
-  value = data.spantree_utils_render_template.config.result
+  value = data.utils_render_template.config.result
 }
 
 # Example: Script with shell variables preserved
-data "spantree_utils_render_template" "script" {
+data "utils_render_template" "script" {
   template = <<-EOT
     #!/bin/bash
     
@@ -78,6 +78,6 @@ data "spantree_utils_render_template" "script" {
 }
 
 output "script" {
-  value = data.spantree_utils_render_template.script.result
+  value = data.utils_render_template.script.result
 }
 

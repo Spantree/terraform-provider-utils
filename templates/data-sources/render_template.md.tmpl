@@ -1,0 +1,16 @@
+---
+page_title: "utils_render_template Data Source - Spantree Utils"
+subcategory: ""
+description: |-
+  {{- if .Description }}{{ .Description }}{{ else }}Renders a template by replacing placeholders with values.{{ end }}
+---
+
+# utils_render_template (Data Source)
+
+{{- if .Description }}
+{{ .Description }}
+{{- end }}
+
+{{- if .SchemaMarkdown }}
+{{ .SchemaMarkdown }}
+{{- end }}

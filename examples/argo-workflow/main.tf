@@ -1,6 +1,6 @@
 terraform {
   required_providers {
-    spantree_utils = {
+    utils = {
       source = "spantree/utils"
     }
     kubernetes = {
@@ -10,7 +10,7 @@ terraform {
   }
 }
 
-provider "spantree_utils" {}
+provider "utils" {}
 
 provider "kubernetes" {
   # Configure your Kubernetes provider here
@@ -50,7 +50,7 @@ variable "end_date" {
 
 # Render the Argo WorkflowTemplate with Terraform values
 # Note: Argo's {{inputs.parameters.*}} syntax is preserved
-data "spantree_utils_render_template" "workflow" {
+data "utils_render_template" "workflow" {
   template = file("${path.module}/workflow-template.yaml")
 
   values = {
@@ -64,11 +64,11 @@ data "spantree_utils_render_template" "workflow" {
 
 # Deploy the rendered workflow to Kubernetes
 resource "kubernetes_manifest" "workflow_template" {
-  manifest = yamldecode(data.spantree_utils_render_template.workflow.result)
+  manifest = yamldecode(data.utils_render_template.workflow.result)
 }
 
 output "rendered_workflow" {
   description = "The rendered workflow template"
-  value       = data.spantree_utils_render_template.workflow.result
+  value       = data.utils_render_template.workflow.result
 }
 

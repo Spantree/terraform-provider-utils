@@ -33,7 +33,7 @@ func New(version string) func() provider.Provider {
 
 // Metadata returns the provider type name.
 func (p *spantreeUtilsProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
-	resp.TypeName = "spantree_utils"
+	resp.TypeName = "utils"
 	resp.Version = p.version
 }
 

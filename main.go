@@ -14,7 +14,7 @@ import (
 // The docs/ directory is auto-generated for the Terraform Registry
 // Run: go install github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs@latest
 //go:generate terraform fmt -recursive ./examples/
-//go:generate tfplugindocs generate --rendered-provider-name "Spantree Utils"
+//go:generate tfplugindocs generate --provider-name "utils" --rendered-provider-name "Spantree Utils"
 
 var (
 	// these will be set by the goreleaser configuration
