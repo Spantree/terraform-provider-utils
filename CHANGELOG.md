@@ -5,12 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2024-11-07
+## [0.2.0] - 2025-11-08
 
 ### Added
 
-- Initial release of terraform-provider-template
-- `template_render` data source for rendering templates with custom placeholder syntax
+- Initial release of terraform-provider-utils
+- `utils_render_template` data source for rendering templates with custom placeholder syntax
 - Support for `@@VAR@@` placeholder syntax that doesn't conflict with:
   - Argo Workflows: `{{inputs.parameters.*}}`
   - Shell scripts: `${VAR}`, `$(command)`

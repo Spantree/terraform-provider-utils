@@ -39,13 +39,13 @@ variable "image_tag" {
 variable "start_date" {
   description = "Start date for data processing"
   type        = string
-  default     = "2024-01-01"
+  default     = "2025-01-01"
 }
 
 variable "end_date" {
   description = "End date for data processing"
   type        = string
-  default     = "2024-12-31"
+  default     = "2025-12-31"
 }
 
 # Render the Argo WorkflowTemplate with Terraform values

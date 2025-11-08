@@ -30,9 +30,11 @@ When working with Terraform to deploy resources like Argo Workflows, Kubernetes 
 
 ## 📚 Documentation
 
-**[📖 View Complete Documentation](user-docs/)** - Comprehensive guides organized using the [Diataxis framework](https://diataxis.fr/)
+**[📖 View Complete Documentation](user-docs/)** - Comprehensive guides for users and contributors
 
-Includes tutorials, how-to guides, technical reference, and conceptual explanations.
+- **[Getting Started](user-docs/getting-started.md)** - Tutorial, examples, and best practices
+- **[Reference](user-docs/reference.md)** - Complete API documentation
+- **[Contributing](user-docs/contributing.md)** - Development setup and releases
 
 ## Installation
 
@@ -43,14 +45,14 @@ Add to your `terraform` block:
 ```hcl
 terraform {
   required_providers {
-    spantree_utils = {
+    utils = {
       source  = "spantree/utils"
-      version = "~> 1.0"
+      version = "~> 0.2"
     }
   }
 }
 
-provider "spantree_utils" {}
+provider "utils" {}
 ```
 
 ### Local Development
@@ -60,7 +62,7 @@ For local development and testing:
 1. Build the provider:
 
    ```bash
-   go build -o terraform-provider-template
+   make build
    ```
 
 2. Create a local provider override in `~/.terraformrc`:
@@ -79,7 +81,7 @@ For local development and testing:
 ### Basic Example
 
 ```hcl
-data "spantree_utils_render_template" "greeting" {
+data "utils_render_template" "greeting" {
   template = "Hello @@NAME@@, welcome to @@PLACE@@!"
 
   values = {
@@ -89,7 +91,7 @@ data "spantree_utils_render_template" "greeting" {
 }
 
 output "greeting" {
-  value = data.spantree_utils_render_template.greeting.result
+  value = data.utils_render_template.greeting.result
   # Output: "Hello Alice, welcome to Wonderland!"
 }
 ```
@@ -97,7 +99,7 @@ output "greeting" {
 ### Configuration File Example
 
 ```hcl
-data "spantree_utils_render_template" "config" {
+data "utils_render_template" "config" {
   template = <<-EOT
     server {
       host = "@@HOST@@"
@@ -117,7 +119,7 @@ data "spantree_utils_render_template" "config" {
 ### Shell Script with Preserved Syntax
 
 ```hcl
-data "spantree_utils_render_template" "script" {
+data "utils_render_template" "script" {
   template = <<-EOT
     #!/bin/bash
     
@@ -155,7 +157,7 @@ variable "image_tag" {
   default = "v1.0.0"
 }
 
-data "spantree_utils_render_template" "workflow" {
+data "utils_render_template" "workflow" {
   template = file("${path.module}/workflow.yaml")
 
   values = {
@@ -165,7 +167,7 @@ data "spantree_utils_render_template" "workflow" {
 }
 
 resource "kubernetes_manifest" "workflow" {
-  manifest = yamldecode(data.spantree_utils_render_template.workflow.result)
+  manifest = yamldecode(data.utils_render_template.workflow.result)
 }
 ```
 
@@ -199,7 +201,7 @@ After rendering, the `@@NAMESPACE@@` and `@@IMAGE_TAG@@` are replaced with Terra
 
 Use `@@VARIABLE_NAME@@` format - alphanumeric and underscores only.
 
-**Learn more**: [Placeholder Syntax Reference](user-docs/reference/placeholder-syntax.md)
+**Learn more**: [Reference Documentation](user-docs/reference.md)
 
 ### Key Features
 
@@ -208,11 +210,11 @@ Use `@@VARIABLE_NAME@@` format - alphanumeric and underscores only.
 ✅ Clear error messages  
 ✅ No infrastructure created
 
-**Learn more**: [Why This Provider?](user-docs/explanation/why-this-provider.md)
+**Learn more**: [Getting Started](user-docs/getting-started.md)
 
 ## Development
 
-See [Local Development Setup](user-docs/how-to/local-development.md) for detailed instructions.
+See [Contributing Guide](user-docs/contributing.md) for detailed instructions.
 
 **Quick start:**
 
@@ -229,15 +231,11 @@ cd examples/basic && terraform init && terraform plan
 
 ## Contributing
 
-Contributions welcome! See:
-
-- [Local Development Setup](user-docs/how-to/local-development.md)
-- [Setup Releases](user-docs/how-to/setup-release.md)
-- [Release Process](user-docs/explanation/release-process.md)
+Contributions welcome! See the [Contributing Guide](user-docs/contributing.md).
 
 ## Resources
 
-- 📚 **[Documentation](user-docs/)** - Complete documentation using Diataxis framework
+- 📚 **[Documentation](user-docs/)** - Complete user guides and API reference
 - 💻 **[Examples](examples/)** - Working code examples
 - 🐛 **[Issues](https://github.com/spantree/terraform-provider-utils/issues)** - Report bugs or request features
 - 📦 **[Terraform Registry](https://registry.terraform.io/providers/spantree/utils)** - Official provider listing
