@@ -47,7 +47,3 @@ Thumbs.db
 dist/
 *.snap
 terraform-provider-utils_*_manifest.json
-
-# Auto-generated Terraform Registry docs
-docs/
-

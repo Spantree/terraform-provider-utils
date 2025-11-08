@@ -26,7 +26,7 @@ provider "utils" {}
 ```hcl
 data "utils_render_template" "greeting" {
   template = "Hello @@NAME@@, welcome to @@PLACE@@!"
-  
+
   values = {
     NAME  = "Alice"
     PLACE = "Wonderland"
@@ -71,7 +71,7 @@ data "utils_render_template" "config" {
       environment = "@@ENV@@"
     }
   EOT
-  
+
   values = {
     HOST = "localhost"
     PORT = "8080"
@@ -105,7 +105,7 @@ Then reference it:
 ```hcl
 data "utils_render_template" "app_config" {
   template = file("${path.module}/config.tpl")
-  
+
   values = {
     DATE    = "2025-01-15"
     HOST    = "0.0.0.0"
@@ -156,7 +156,7 @@ data "utils_render_template" "deployment" {
           - name: myapp
             image: myapp:@@VERSION@@
   EOT
-  
+
   values = {
     ENV      = var.environment
     VERSION  = var.app_version
@@ -180,7 +180,7 @@ The provider validates that all placeholders have values:
 ```hcl
 data "utils_render_template" "greeting" {
   template = "Hello @@NAME@@, today is @@DAY@@."
-  
+
   values = {
     NAME = "Bob"
     # Oops! Missing DAY
@@ -232,14 +232,14 @@ metadata:
     managed-by: terraform
 spec:
   entrypoint: main
-  
+
   arguments:
     parameters:
       - name: start-date
         value: "@@START_DATE@@"
       - name: end-date
         value: "@@END_DATE@@"
-  
+
   templates:
     - name: main
       steps:
@@ -251,7 +251,7 @@ spec:
                   value: "{{workflow.parameters.start-date}}"
                 - name: end-date
                   value: "{{workflow.parameters.end-date}}"
-    
+
     - name: processor
       inputs:
         parameters:
@@ -264,18 +264,18 @@ spec:
           - |
             #!/bin/bash
             set -e
-            
+
             # These are Argo parameters ({{...}})
             START_DATE="{{inputs.parameters.start-date}}"
             END_DATE="{{inputs.parameters.end-date}}"
-            
+
             echo "Processing from $START_DATE to $END_DATE"
-            
+
             # Bash conditionals work fine
             if [[ -n "$START_DATE" ]]; then
               echo "Valid date range"
             fi
-            
+
             # Shell arithmetic works fine
             DAYS=$(($(date -d "$END_DATE" +%s) - $(date -d "$START_DATE" +%s)))
             echo "Processing $DAYS seconds of data"
@@ -336,7 +336,7 @@ variable "end_date" {
 # Render the template
 data "utils_render_template" "workflow" {
   template = file("${path.module}/workflow-template.yaml")
-  
+
   values = {
     NAMESPACE        = var.namespace
     IMAGE_REPOSITORY = var.image_repository
@@ -485,19 +485,19 @@ values = {
 
 ## Troubleshooting
 
-**Problem**: `terraform init` fails with "provider not found"  
+**Problem**: `terraform init` fails with "provider not found"
 **Solution**: Check your internet connection and verify the provider name is spelled correctly: `spantree/utils`
 
-**Problem**: Template doesn't render as expected  
+**Problem**: Template doesn't render as expected
 **Solution**: Ensure placeholder names in the template exactly match the keys in your `values` map (case-sensitive)
 
-**Problem**: Getting "missing values" error  
+**Problem**: Getting "missing values" error
 **Solution**: Every `@@PLACEHOLDER@@` in your template must have a corresponding entry in the `values` map
 
-**Problem**: Argo syntax is being replaced  
+**Problem**: Argo syntax is being replaced
 **Solution**: Ensure you're using `@@VAR@@` for Terraform values, not `{{VAR}}`
 
-**Problem**: Shell commands fail  
+**Problem**: Shell commands fail
 **Solution**: Verify shell syntax like `$VAR`, `[[ ]]`, `$(( ))` is preserved in the rendered output
 
 ---

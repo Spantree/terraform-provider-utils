@@ -122,15 +122,15 @@ data "utils_render_template" "config" {
 data "utils_render_template" "script" {
   template = <<-EOT
     #!/bin/bash
-    
+
     # Terraform-injected values
     NAMESPACE=@@NAMESPACE@@
     IMAGE_TAG=@@IMAGE_TAG@@
-    
+
     # Shell variables remain as-is
     echo "Namespace: $${NAMESPACE}"
     echo "Tag: $(echo $IMAGE_TAG)"
-    
+
     # Bash conditionals work fine
     if [[ -n "$NAMESPACE" ]]; then
       echo "Valid"
@@ -205,9 +205,9 @@ Use `@@VARIABLE_NAME@@` format - alphanumeric and underscores only.
 
 ### Key Features
 
-✅ Conflict-free with Argo `{{}}`, shell `${}`, bash operators  
-✅ Validates all placeholders have values  
-✅ Clear error messages  
+✅ Conflict-free with Argo `{{}}`, shell `${}`, bash operators
+✅ Validates all placeholders have values
+✅ Clear error messages
 ✅ No infrastructure created
 
 **Learn more**: [Getting Started](user-docs/getting-started.md)

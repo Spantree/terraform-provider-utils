@@ -1,0 +1,19 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+        exclude: 'examples/.*\.yaml$'  # Exclude template files with @@VAR@@ syntax
+      - id: check-added-large-files
+
+  - repo: local
+    hooks:
+      - id: terraform-provider-docs
+        name: Generate Terraform Provider Documentation
+        entry: bash -c 'export PATH="$HOME/go/bin:$GOPATH/bin:/usr/local/go/bin:$PATH" && if ! command -v tfplugindocs &> /dev/null; then echo "Installing tfplugindocs..." && go install github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs@latest; fi && tfplugindocs generate --provider-name "utils" --rendered-provider-name "Spantree Utils"'
+        language: system
+        files: ^(internal/.*\.go|templates/.*\.tmpl|examples/.*/.*\.tf)$
+        exclude: ^docs/
+        pass_filenames: false

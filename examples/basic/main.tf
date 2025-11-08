@@ -29,7 +29,7 @@ data "utils_render_template" "config" {
       host = "@@HOST@@"
       port = @@PORT@@
       environment = "@@ENV@@"
-      
+
       database {
         connection_string = "@@DB_CONN@@"
       }
@@ -52,20 +52,20 @@ output "config" {
 data "utils_render_template" "script" {
   template = <<-EOT
     #!/bin/bash
-    
+
     # Terraform-injected values
     NAMESPACE=@@NAMESPACE@@
     IMAGE_TAG=@@IMAGE_TAG@@
-    
+
     # Shell variables that remain as-is
     echo "Namespace: $${NAMESPACE}"
     echo "Image tag: $(echo $IMAGE_TAG)"
-    
+
     # Bash conditionals work fine
     if [[ -n "$NAMESPACE" ]]; then
       echo "Namespace is set"
     fi
-    
+
     # Arithmetic expressions preserved
     count=$((1 + 2))
     echo "Count: $count"
@@ -80,4 +80,3 @@ data "utils_render_template" "script" {
 output "script" {
   value = data.utils_render_template.script.result
 }
-

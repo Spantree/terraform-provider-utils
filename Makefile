@@ -61,4 +61,3 @@ help:
 	@echo "  clean      - Remove build artifacts and generated docs"
 	@echo "  deps       - Download and tidy dependencies"
 	@echo "  check      - Run fmt, lint, and test"
-

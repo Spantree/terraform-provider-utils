@@ -23,7 +23,7 @@ Renders a template by replacing placeholders with provided values.
 ```hcl
 data "utils_render_template" "config" {
   template = "Server: @@HOST@@:@@PORT@@"
-  
+
   values = {
     HOST = "localhost"
     PORT = "8080"
@@ -43,7 +43,7 @@ output "result" {
 ```hcl
 data "utils_render_template" "from_file" {
   template = file("${path.module}/template.tpl")
-  
+
   values = {
     VAR1 = "value1"
     VAR2 = "value2"
@@ -60,7 +60,7 @@ variable "environment" {
 
 data "utils_render_template" "config" {
   template = "ENV=@@ENVIRONMENT@@"
-  
+
   values = {
     ENVIRONMENT = var.environment
   }
@@ -75,10 +75,10 @@ data "utils_render_template" "script" {
     #!/bin/bash
     export APP_NAME="@@APP_NAME@@"
     export VERSION="@@VERSION@@"
-    
+
     echo "Starting $APP_NAME v$VERSION"
   EOT
-  
+
   values = {
     APP_NAME = "myapp"
     VERSION  = "1.0.0"
@@ -95,7 +95,7 @@ variable "enable_debug" {
 
 data "utils_render_template" "config" {
   template = "DEBUG=@@DEBUG@@"
-  
+
   values = {
     DEBUG = var.enable_debug ? "true" : "false"
   }
@@ -113,7 +113,7 @@ data "utils_render_template" "repeated" {
     @@APP@@ is great.
     Use @@APP@@ today!
   EOT
-  
+
   values = {
     APP = "TerraformUtils"
   }

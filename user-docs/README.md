@@ -31,7 +31,7 @@ This provider uses `@@VAR@@` syntax which doesn't conflict with any common templ
 ```hcl
 data "utils_render_template" "workflow" {
   template = file("workflow.yaml")
-  
+
   values = {
     NAMESPACE = "production"
     IMAGE_TAG = "v1.2.3"
@@ -56,9 +56,9 @@ After rendering, the `@@` placeholders are replaced with Terraform values, while
 
 ## Key Features
 
-✅ **Conflict-free syntax** - `@@VAR@@` doesn't interfere with other templating systems  
-✅ **Validation** - All placeholders must have values or an error is returned  
-✅ **Simple** - Pure data source, no infrastructure created  
+✅ **Conflict-free syntax** - `@@VAR@@` doesn't interfere with other templating systems
+✅ **Validation** - All placeholders must have values or an error is returned
+✅ **Simple** - Pure data source, no infrastructure created
 ✅ **Fast** - Template rendering happens locally during plan/apply
 
 ---

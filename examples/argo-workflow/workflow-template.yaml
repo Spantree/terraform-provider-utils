@@ -8,7 +8,7 @@ metadata:
     managed-by: terraform
 spec:
   entrypoint: main
-  
+
   # Workflow-level parameters that can be overridden at runtime
   arguments:
     parameters:
@@ -18,7 +18,7 @@ spec:
         value: "@@END_DATE@@"
       - name: batch-size
         value: "1000"
-  
+
   # Volume claim template for shared storage
   volumeClaimTemplates:
     - metadata:
@@ -28,7 +28,7 @@ spec:
         resources:
           requests:
             storage: 10Gi
-  
+
   templates:
     # Main workflow orchestration
     - name: main
@@ -41,7 +41,7 @@ spec:
                   value: "{{workflow.parameters.start-date}}"
                 - name: end-date
                   value: "{{workflow.parameters.end-date}}"
-        
+
         - - name: process-data
             template: processor
             arguments:
@@ -52,14 +52,14 @@ spec:
                   value: "{{workflow.parameters.end-date}}"
                 - name: batch-size
                   value: "{{workflow.parameters.batch-size}}"
-        
+
         - - name: generate-report
             template: report
             arguments:
               parameters:
                 - name: processing-status
                   value: "{{steps.process-data.outputs.result}}"
-    
+
     # Input validation step
     - name: validate
       inputs:
@@ -72,18 +72,18 @@ spec:
         args:
           - |
             from datetime import datetime
-            
+
             start = "{{inputs.parameters.start-date}}"
             end = "{{inputs.parameters.end-date}}"
-            
+
             start_dt = datetime.strptime(start, "%Y-%m-%d")
             end_dt = datetime.strptime(end, "%Y-%m-%d")
-            
+
             if start_dt > end_dt:
                 raise ValueError(f"Start date {start} is after end date {end}")
-            
+
             print(f"Date range validated: {start} to {end}")
-    
+
     # Data processing step
     - name: processor
       inputs:
@@ -103,24 +103,24 @@ spec:
           - |
             #!/bin/bash
             set -e
-            
+
             # These are Argo parameters, evaluated at runtime
             START_DATE="{{inputs.parameters.start-date}}"
             END_DATE="{{inputs.parameters.end-date}}"
             BATCH_SIZE="{{inputs.parameters.batch-size}}"
-            
+
             echo "Processing data from $START_DATE to $END_DATE"
             echo "Batch size: $BATCH_SIZE"
-            
+
             # Simulate processing
             RECORDS=$((RANDOM % 10000 + 1000))
             echo "Processed $RECORDS records"
             echo "$RECORDS" > /tmp/output.txt
-            
+
             # Shell arithmetic works fine
             BATCHES=$((RECORDS / BATCH_SIZE))
             echo "Total batches: $BATCHES"
-            
+
             # Bash conditionals work fine
             if [[ $RECORDS -gt 5000 ]]; then
               echo "Large dataset processed"
@@ -137,7 +137,7 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "1000m"
-    
+
     # Report generation step
     - name: report
       inputs:
@@ -150,9 +150,9 @@ spec:
           - |
             import json
             from datetime import datetime
-            
+
             status = "{{inputs.parameters.processing-status}}"
-            
+
             report = {
                 "timestamp": datetime.utcnow().isoformat(),
                 "records_processed": int(status),
@@ -160,9 +160,8 @@ spec:
                 "workflow": "{{workflow.name}}",
                 "namespace": "@@NAMESPACE@@"
             }
-            
+
             print(json.dumps(report, indent=2))
         volumeMounts:
           - name: workdir
             mountPath: /data
-

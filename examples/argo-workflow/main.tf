@@ -71,4 +71,3 @@ output "rendered_workflow" {
   description = "The rendered workflow template"
   value       = data.utils_render_template.workflow.result
 }
-
