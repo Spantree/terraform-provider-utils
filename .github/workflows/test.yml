@@ -10,6 +10,7 @@ on:
       - 'CHANGELOG.md'
       - 'LICENSE'
       - 'docs/**'
+      - 'user-docs/**'
   push:
     branches:
       - main
@@ -18,6 +19,7 @@ on:
       - 'CHANGELOG.md'
       - 'LICENSE'
       - 'docs/**'
+      - 'user-docs/**'
 
 # Testing only needs permissions to read the repository contents.
 permissions:
