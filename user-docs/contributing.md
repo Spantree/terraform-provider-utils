@@ -9,6 +9,41 @@ Guide for contributing to the Terraform Spantree Utils Provider.
 - Go 1.24+ installed
 - Terraform 1.0+ installed
 - Git
+- [pre-commit](https://pre-commit.com/) (for automatic code quality checks and documentation generation)
+
+### Installing Pre-commit Hooks (Recommended)
+
+We use pre-commit hooks to automatically generate documentation and enforce code quality standards.
+
+**Install pre-commit:**
+
+```bash
+# macOS
+brew install pre-commit
+
+# Linux
+pip install pre-commit
+
+# Windows (with Python)
+pip install pre-commit
+```
+
+**Setup hooks (one-time, after cloning):**
+
+```bash
+cd terraform-provider-utils
+pre-commit install
+```
+
+**What the hooks do:**
+
+- ✅ Remove trailing whitespace
+- ✅ Fix end-of-file newlines
+- ✅ Validate YAML files (excluding template files)
+- ✅ Check for accidentally committed large files
+- ✅ **Auto-generate Terraform Registry documentation** from provider code
+
+> **Note**: Documentation in `docs/` is automatically generated from your provider code, templates, and examples before each commit. You don't need to manually run documentation commands!
 
 ### Quick Start
 
@@ -139,15 +174,28 @@ docs/
     └── render_template.md
 ```
 
-**How to generate**:
+**How it's generated (automatically!)**:
+
+- ✅ **Pre-commit hook** (recommended): Runs before each `git commit`
+- ✅ **GitHub Actions**: Runs as backup when code is pushed to `main`
+
+You **don't need to manually generate docs** - they're created automatically from:
+
+- Provider schema (in `internal/provider/*.go`)
+- Templates (in `templates/*.md.tmpl`)
+- Examples (in `examples/`)
+
+**Manual generation** (if needed):
 
 ```bash
-# Generate docs from code
+# Using make
 make docs
 
-# Or manually
+# Or directly
 go generate ./...
 ```
+
+> **Important**: Never manually edit files in `docs/` - your changes will be overwritten!
 
 This extracts documentation from:
 
