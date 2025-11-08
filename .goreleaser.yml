@@ -5,6 +5,8 @@ before:
   hooks:
     # this is just an example and not a requirement for provider building/publishing
     - go mod tidy
+    # Copy and rename manifest for checksumming
+    - sh -c 'cp terraform-registry-manifest.json terraform-provider-utils_{{ .Version }}_manifest.json'
 
 builds:
   - env:
@@ -50,7 +52,7 @@ checksum:
   name_template: '{{ .ProjectName }}_{{ .Version }}_SHA256SUMS'
   algorithm: sha256
   extra_files:
-    - glob: 'terraform-registry-manifest.json'
+    - glob: '{{ .ProjectName }}_{{ .Version }}_manifest.json'
 
 signs:
   - artifacts: checksum
@@ -67,8 +69,7 @@ signs:
 
 release:
   extra_files:
-    - glob: 'terraform-registry-manifest.json'
-      name_template: '{{ .ProjectName }}_{{ .Version }}_manifest.json'
+    - glob: '{{ .ProjectName }}_{{ .Version }}_manifest.json'
   # If you want to manually examine the release before its live, uncomment this line:
   # draft: true
 
