@@ -1,0 +1,64 @@
+---
+page_title: "{{.Name}} {{.Type}} - {{.ProviderName}}"
+subcategory: ""
+description: |-
+  Renders a template by replacing @@PLACEHOLDER@@ syntax with provided values.
+---
+
+# {{.Name}} ({{.Type}})
+
+Renders a template by replacing `@@PLACEHOLDER@@` syntax with provided values. This allows you to inject Terraform-managed values into templates that contain other templating systems (like Argo Workflows, shell scripts, or Helm) without conflicts.
+
+## Example Usage
+
+### Basic Example
+
+{{tffile "examples/basic/main.tf"}}
+
+### From File
+
+```hcl
+data "spantree_utils_render_template" "from_file" {
+  template = file("${path.module}/template.tpl")
+  
+  values = {
+    VAR1 = "value1"
+    VAR2 = "value2"
+  }
+}
+```
+
+### Argo Workflow Example
+
+{{tffile "examples/argo-workflow/main.tf"}}
+
+## Placeholder Syntax
+
+Placeholders must follow the pattern: `@@[A-Za-z0-9_]+@@`
+
+**Valid:**
+- `@@NAME@@`
+- `@@IMAGE_TAG@@`
+- `@@my_var_123@@`
+
+**Invalid:**
+- `@@my-var@@` (hyphens not allowed)
+- `@@my.var@@` (dots not allowed)
+- `@@my var@@` (spaces not allowed)
+
+## How It Works
+
+The provider:
+1. Scans the template for all `@@PLACEHOLDER@@` patterns
+2. Validates that each placeholder has a corresponding value
+3. Replaces all placeholders with their values
+4. Returns an error if any placeholders are missing values
+
+This ensures you never accidentally deploy a template with unreplaced placeholders.
+
+{{ .SchemaMarkdown }}
+
+## Additional Documentation
+
+For more comprehensive guides and tutorials, see the [project documentation](https://github.com/spantree/terraform-provider-utils/tree/main/user-docs).
+

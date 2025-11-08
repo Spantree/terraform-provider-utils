@@ -4,14 +4,22 @@ A Terraform provider offering utility functions including template rendering wit
 
 ## Why This Provider?
 
-When working with Terraform to deploy resources like Argo Workflows, Kubernetes manifests, or shell scripts, you often need to inject Terraform-managed values (like namespaces, image tags, or dates) into templates that also contain their own templating syntax. Standard Terraform templating can conflict with:
+When working with Terraform to deploy resources like Argo Workflows, Kubernetes manifests, or shell scripts, you often need to inject Terraform-managed values (like namespaces, image tags, or dates) into templates that also contain their own templating syntax.
+
+**The problem:**
+
+- Standard Terraform templating conflicts with Argo `{{}}`, shell `${}`, and bash operators
+- Other providers like `kbst/kustomization` or Helm are often overkill for simple template substitution
+- Managing Kustomize overlays or Helm charts adds unnecessary complexity when you just need variable injection
+
+**Common conflicts:**
 
 - **Argo Workflows**: `{{inputs.parameters.*}}` syntax
 - **Shell scripts**: `${VAR}`, `$(command)` syntax
 - **Bash**: `[[ ]]`, `<<`, `>>`, `<>`, `&&`, `||`, `(( ))` operators
 - **Windows batch files**: `%%VAR%%` syntax
 
-This provider solves that problem by using a distinctive placeholder syntax: `@@VAR@@`
+**This provider solves it** by using a distinctive placeholder syntax (`@@VAR@@`) that doesn't conflict with anything, while staying lightweight and focused on just template rendering.
 
 ## Features
 
@@ -20,9 +28,15 @@ This provider solves that problem by using a distinctive placeholder syntax: `@@
 - **Simple**: Pure data source, no infrastructure created
 - **Fast**: Template rendering happens locally during plan/apply
 
+## 📚 Documentation
+
+**[📖 View Complete Documentation](user-docs/)** - Comprehensive guides organized using the [Diataxis framework](https://diataxis.fr/)
+
+Includes tutorials, how-to guides, technical reference, and conceptual explanations.
+
 ## Installation
 
-### Terraform 0.13+
+### Terraform 1.0+
 
 Add to your `terraform` block:
 
@@ -179,154 +193,55 @@ spec:
 
 After rendering, the `@@NAMESPACE@@` and `@@IMAGE_TAG@@` are replaced with Terraform values, while `{{inputs.parameters.input}}` remains intact for Argo to evaluate at runtime.
 
-## Data Source: `spantree_utils_render_template`
+## Quick Reference
 
-### Arguments
+### Placeholder Syntax
 
-- `template` (String, Required) - The template string containing placeholders in `@@VAR@@` format. Placeholder names must be alphanumeric or underscore.
-- `values` (Map of String, Required) - Map of placeholder names to their replacement values. All placeholders in the template must have a corresponding value.
+Use `@@VARIABLE_NAME@@` format - alphanumeric and underscores only.
 
-### Attributes
+**Learn more**: [Placeholder Syntax Reference](user-docs/reference/placeholder-syntax.md)
 
-- `result` (String) - The rendered template with all placeholders replaced by their values.
+### Key Features
 
-## Placeholder Syntax
+✅ Conflict-free with Argo `{{}}`, shell `${}`, bash operators  
+✅ Validates all placeholders have values  
+✅ Clear error messages  
+✅ No infrastructure created
 
-Placeholders use the format: `@@VARIABLE_NAME@@`
-
-**Rules:**
-
-- Placeholder names must be alphanumeric or underscore: `[A-Za-z0-9_]+`
-- All placeholders in the template must have a corresponding value in the `values` map
-- Extra values in the map (not used in the template) are ignored
-- The same placeholder can appear multiple times in the template
-
-**Valid placeholders:**
-
-- `@@NAME@@`
-- `@@IMAGE_TAG@@`
-- `@@my_var_123@@`
-
-**Invalid placeholders:**
-
-- `@@my-var@@` (hyphens not allowed)
-- `@@my.var@@` (dots not allowed)
-- `@@my var@@` (spaces not allowed)
-
-## Error Handling
-
-The provider will return an error if:
-
-1. **Missing placeholder values**: Any placeholder in the template doesn't have a corresponding value
-
-   ```
-   Error: Template Rendering Failed
-   Failed to render template: missing values for placeholders: NAMESPACE, IMAGE_TAG
-   ```
-
-2. **Invalid configuration**: Required arguments are missing or have wrong types
-
-## Comparison with Other Solutions
-
-### vs. Terraform's built-in `templatefile()`
-
-Terraform's `templatefile()` function uses `${}` syntax which conflicts with shell scripts and can be confusing when mixed with Terraform's own interpolation syntax.
-
-**This provider:**
-
-- Uses distinctive `%%VAR%%` syntax
-- Explicit validation of all placeholders
-- Clear error messages
-- Works as a data source with proper state management
-
-### vs. Terraform's deprecated `template` provider
-
-The old `template` provider used `${}` syntax and has been deprecated. This provider:
-
-- Uses modern Plugin Framework
-- Uses conflict-free syntax
-- Provides better error messages
-- Actively maintained
-
-### vs. External template processors
-
-Using external tools (like `envsubst`, `sed`, or custom scripts) requires:
-
-- Additional dependencies
-- Complex null_resource or local-exec provisioners
-- Less integration with Terraform's plan/apply workflow
-
-**This provider:**
-
-- Pure Terraform solution
-- No external dependencies
-- Works in Terraform plan phase
-- Proper state management
+**Learn more**: [Why This Provider?](user-docs/explanation/why-this-provider.md)
 
 ## Development
 
-### Requirements
+See [Local Development Setup](user-docs/how-to/local-development.md) for detailed instructions.
 
-- Go 1.23+
-- Terraform 1.0+
-
-### Building
+**Quick start:**
 
 ```bash
-go build -o terraform-provider-utils
-```
+# Build
+make build
 
-### Testing
+# Test
+make test
 
-Run unit tests:
-
-```bash
-go test -v ./internal/provider/
-```
-
-Run acceptance tests:
-
-```bash
-TF_ACC=1 go test -v ./internal/provider/
-```
-
-### Running Examples
-
-```bash
-cd examples/basic
-terraform init
-terraform plan
-terraform apply
+# Run examples
+cd examples/basic && terraform init && terraform plan
 ```
 
 ## Contributing
 
-Contributions are welcome! Please:
+Contributions welcome! See:
 
-1. Fork the repository
-2. Create a feature branch
-3. Add tests for new functionality
-4. Ensure all tests pass
-5. Submit a pull request
+- [Local Development Setup](user-docs/how-to/local-development.md)
+- [Setup Releases](user-docs/how-to/setup-release.md)
+- [Release Process](user-docs/explanation/release-process.md)
 
-For information about releasing new versions, see [RELEASE.md](RELEASE.md).
+## Resources
+
+- 📚 **[Documentation](user-docs/)** - Complete documentation using Diataxis framework
+- 💻 **[Examples](examples/)** - Working code examples
+- 🐛 **[Issues](https://github.com/spantree/terraform-provider-utils/issues)** - Report bugs or request features
+- 📦 **[Terraform Registry](https://registry.terraform.io/providers/spantree/utils)** - Official provider listing
 
 ## License
 
-This provider is released under the MIT License. See LICENSE for details.
-
-## Support
-
-For issues, questions, or contributions, please visit:
-<https://github.com/spantree/terraform-provider-utils>
-
-## Examples
-
-More examples can be found in the `examples/` directory:
-
-- `examples/basic/` - Basic usage examples
-- `examples/argo-workflow/` - Complete Argo Workflow deployment example
-
-## Acknowledgments
-
-This provider was built to solve real-world problems when deploying Argo Workflows and other Kubernetes resources with Terraform, where multiple templating systems need to coexist peacefully.
+MIT License - see [LICENSE](LICENSE) for details.

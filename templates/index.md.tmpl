@@ -1,0 +1,44 @@
+---
+page_title: "Provider: Spantree Utils"
+description: |-
+  The Spantree Utils provider offers utility functions including template rendering with custom placeholder syntax that doesn't conflict with other templating systems.
+---
+
+# Spantree Utils Provider
+
+The Spantree Utils provider offers utility functions including template rendering with custom placeholder syntax (`@@VAR@@`) that doesn't conflict with other templating systems like Argo Workflows, shell scripts, or Helm.
+
+## Why This Provider?
+
+When deploying resources like Argo Workflows, Kubernetes manifests, or shell scripts with Terraform, you often need to inject Terraform-managed values into templates that contain their own templating syntax.
+
+**Common conflicts:**
+- Argo Workflows use double-brace syntax for parameters
+- Shell scripts use `${VAR}` and `$(command)` syntax  
+- Bash uses `[[ ]]`, `<<`, `>>`, operators
+- Windows batch files use `%%VAR%%` syntax
+
+**This provider solves it** by using `@@VAR@@` placeholders that don't conflict with any common templating system.
+
+## Example Usage
+
+{{tffile "examples/basic/main.tf"}}
+
+## Use Cases
+
+- **Argo Workflows**: Deploy WorkflowTemplates where Terraform manages infrastructure config and Argo manages runtime parameters
+- **Kubernetes Manifests**: Inject environment-specific values while preserving scripts
+- **Shell Scripts**: Generate scripts with Terraform values while preserving shell syntax
+- **Configuration Files**: Create configs with Terraform-managed values
+
+## Additional Documentation
+
+For comprehensive guides including:
+- Step-by-step tutorials
+- How-to guides for common tasks
+- Detailed explanations and comparisons
+
+Visit the [project documentation](https://github.com/spantree/terraform-provider-utils/tree/main/user-docs).
+
+{{ .SchemaMarkdown | trimspace }}
+

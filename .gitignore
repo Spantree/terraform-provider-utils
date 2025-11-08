@@ -42,3 +42,10 @@ Thumbs.db
 
 # cursor files
 .cursor/mcp.json
+
+# GoReleaser
+dist/
+*.snap
+
+# Auto-generated Terraform Registry docs
+docs/

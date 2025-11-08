@@ -68,7 +68,7 @@ Go to your GitHub repository settings:
 
 ### 4. Register Your Provider on Terraform Registry
 
-1. Go to https://registry.terraform.io
+1. Go to <https://registry.terraform.io>
 2. Sign in with your GitHub account
 3. Click **Publish** → **Provider**
 4. Select your GitHub repository: `spantree/terraform-provider-spantree`
@@ -77,6 +77,7 @@ Go to your GitHub repository settings:
 ### 5. Add Your Public GPG Key to Terraform Registry
 
 1. Export your public key:
+
    ```bash
    gpg --armor --export YOUR_KEY_FINGERPRINT
    ```
@@ -111,6 +112,7 @@ Before releasing, update `CHANGELOG.md` with all changes in the new version:
 ```
 
 Follow [Semantic Versioning](https://semver.org/):
+
 - **MAJOR** (1.0.0 → 2.0.0): Breaking changes
 - **MINOR** (1.0.0 → 1.1.0): New features, backwards compatible
 - **PATCH** (1.0.0 → 1.0.1): Bug fixes, backwards compatible
@@ -134,6 +136,7 @@ git push origin v1.1.0
 ```
 
 **Important**: The tag must:
+
 - Start with `v` (e.g., `v1.1.0`, not `1.1.0`)
 - Follow semantic versioning (MAJOR.MINOR.PATCH)
 - Be an annotated tag (use `-a` flag)
@@ -146,6 +149,7 @@ git push origin v1.1.0
 4. Wait for it to complete (usually 2-5 minutes)
 
 The workflow will:
+
 - Build binaries for all platforms
 - Generate SHA256 checksums
 - Sign the checksums with your GPG key
@@ -169,11 +173,12 @@ The workflow will:
 After publishing the release on GitHub:
 
 1. Wait 1-2 minutes for the webhook to trigger
-2. Go to https://registry.terraform.io/providers/spantree/utils
+2. Go to <https://registry.terraform.io/providers/spantree/utils>
 3. Verify that your new version appears in the version list
 4. Click on the version to see the documentation
 
 If the version doesn't appear:
+
 - Check the webhook deliveries in GitHub Settings → Webhooks
 - Verify your GPG signature is valid
 - Check that all required files are present in the release
@@ -207,6 +212,7 @@ output "result" {
 ```
 
 Run:
+
 ```bash
 terraform init
 terraform plan
@@ -232,6 +238,7 @@ When publishing on GitHub, check the **"This is a pre-release"** box. The Terraf
 ### Workflow Failed: "No secret key"
 
 The GPG key wasn't imported correctly. Verify:
+
 - `GPG_PRIVATE_KEY` secret contains the entire private key block
 - `GPG_PASSPHRASE` is correct
 - The key hasn't expired
@@ -239,11 +246,14 @@ The GPG key wasn't imported correctly. Verify:
 ### Release Not Appearing on Terraform Registry
 
 Check:
+
 1. **Webhook**: Go to GitHub Settings → Webhooks, verify `registry.terraform.io` webhook exists
 2. **Signature**: Verify the GPG signature is valid:
+
    ```bash
    gpg --verify terraform-provider-spantree_X.Y.Z_SHA256SUMS.sig terraform-provider-spantree_X.Y.Z_SHA256SUMS
    ```
+
 3. **Public Key**: Ensure your public key is registered in Terraform Registry
 4. **Release Status**: Ensure the release is published (not draft)
 
@@ -315,4 +325,3 @@ If you need to rollback a release:
 - [Semantic Versioning](https://semver.org/)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
 - [GPG Quick Start](https://www.gnupg.org/gph/en/manual/c14.html)
-

@@ -1,4 +1,4 @@
-# Prompt: Terraform Template Provider
+# Design Requirements
 
 Create a Terraform provider that enables template rendering with custom placeholder syntax. The provider should be designed to work alongside existing templating systems without conflicts.
 
@@ -49,6 +49,7 @@ Users should be able to:
 ## Example Scenario
 
 Consider an Argo WorkflowTemplate YAML file where:
+
 - The namespace, image tag, and date ranges need to come from Terraform variables
 - The workflow steps use Argo's `{{inputs.parameters.*}}` syntax for runtime parameter passing
 - Both the Terraform placeholders and Argo syntax coexist in the same file
@@ -56,4 +57,4 @@ Consider an Argo WorkflowTemplate YAML file where:
 
 The provider should make this workflow natural and error-free.
 
-Use the mcp sequential-thinking, the mcp exa and the mcp ref
+This document captures the original design requirements and problem statement for the Terraform Spantree Utils Provider.
