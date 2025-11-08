@@ -43,7 +43,7 @@ jobs:
           version: latest
 
   generate:
-    name: Generate
+    name: Generate Docs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -56,12 +56,17 @@ jobs:
           terraform_version: "1.9.*"
           terraform_wrapper: false
       - name: Install tfplugindocs
-        run: go install github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs@latest
-      - run: go generate ./...
-      - name: git diff
+        run: |
+          go install github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs@latest
+          echo "$HOME/go/bin" >> $GITHUB_PATH
+      - name: Generate documentation
+        run: go generate ./...
+      - name: Check for uncommitted changes
         run: |
           git diff --compact-summary --exit-code || \
-            (echo; echo "Unexpected difference in directories after code generation. Run 'go generate ./...' command and commit."; exit 1)
+            (echo ""; echo "ERROR: Documentation is out of date!"; \
+             echo "Run 'make docs' locally and commit the changes."; \
+             echo ""; git diff; exit 1)
 
   # Run unit tests
   test:
