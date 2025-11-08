@@ -87,7 +87,7 @@ jobs:
 
   # Run acceptance tests in a matrix with Terraform CLI versions
   test-terraform-versions:
-    name: Acceptance Tests (Terraform ${{ matrix.terraform }})
+    name: AccTests (TF ${{ matrix.terraform }})
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 15
