@@ -206,15 +206,15 @@ This extracts documentation from:
 **Important**: The `docs/` directory is auto-generated but committed to the repository because:
 
 - Terraform Registry reads docs from Git tags/releases
-- CI validates docs are up-to-date
+- Documentation must exist in the tagged commit
 
-**Workflow**:
+**Workflow (with pre-commit hooks installed)**:
 
 1. Update schema descriptions in `internal/provider/*.go`
-2. Run `make docs` to regenerate
-3. Commit both code and `docs/` changes
+2. Run `git commit` - **pre-commit hook automatically generates docs!**
+3. Both code and `docs/` changes are committed together
 
-If you forget to run `make docs`, CI will fail.
+If pre-commit hooks aren't installed, the GitHub Actions workflow will automatically generate and commit docs when you push to `main`.
 
 ---
 
@@ -307,17 +307,42 @@ ls -la dist/
 
 ### Troubleshooting Releases
 
+#### Workflow failed: "git doesn't contain any tags"
+
+- You need to create a version tag first (e.g., `git tag v0.1.0`)
+- Push the tag with `git push origin v0.1.0`
+
 #### Workflow failed: "No secret key"
 
 - Verify `GPG_PRIVATE_KEY` secret is set correctly
 - Ensure it includes the full BEGIN/END blocks
 - Check that `GPG_PASSPHRASE` is correct
 
+#### "SHASUM signature failed verification: Invalid signature"
+
+- Verify signature locally: `gpg --verify SHA256SUMS.sig SHA256SUMS`
+- If valid locally but registry fails, contact `terraform-registry@hashicorp.com`
+- May need to re-upload GPG public key at [registry.terraform.io/settings/gpg-keys](https://registry.terraform.io/settings/gpg-keys)
+
+#### "Missing SHA256 checksum for manifest.json"
+
+- **Already fixed!** The `.goreleaser.yml` includes the manifest in checksums
+- Verify: `cat SHA256SUMS | grep manifest` should show the checksum
+- If missing, the `before.hooks` in `.goreleaser.yml` copies the manifest to versioned name
+
+#### Documentation not appearing on Terraform Registry
+
+- Ensure `docs/` directory is committed to Git (not in `.gitignore`)
+- Verify docs exist in tag: `git show v0.4.0:docs/index.md`
+- Pre-commit hook or GitHub Actions should have generated docs before tagging
+- Wait 2-5 minutes for registry to ingest the release
+
 #### Release not on Terraform Registry
 
 - Ensure the release is **published** (not draft)
 - Verify public key is registered in Terraform Registry
 - Wait 2-3 minutes for webhook to process
+- Check the webhook in repository settings
 
 ---
 
@@ -367,13 +392,16 @@ Run `make docs` and commit the generated files
 
 1. Fork the repository
 2. Create a feature branch
-3. Make changes with tests
-4. Run `make test` and `make fmt`
-5. Run `make docs` if you changed schemas
-6. Push and create a PR
-7. Test workflow runs automatically
-8. Address any failures
-9. Get review and merge
+3. Install pre-commit hooks: `pre-commit install`
+4. Make changes with tests
+5. Run `make test` and `make fmt`
+6. Commit changes (**pre-commit automatically generates docs!**)
+7. Push and create a PR
+8. Test workflow runs automatically
+9. Address any failures
+10. Get review and merge
+
+> **Tip**: With pre-commit hooks installed, you don't need to manually run `make docs` - it happens automatically!
 
 ---
 

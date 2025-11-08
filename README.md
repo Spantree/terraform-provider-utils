@@ -219,6 +219,10 @@ See [Contributing Guide](user-docs/contributing.md) for detailed instructions.
 **Quick start:**
 
 ```bash
+# Install pre-commit hooks (one-time setup)
+brew install pre-commit
+pre-commit install
+
 # Build
 make build
 
@@ -228,6 +232,8 @@ make test
 # Run examples
 cd examples/basic && terraform init && terraform plan
 ```
+
+> **Note**: Pre-commit hooks automatically generate documentation from your code before each commit. See [Contributing Guide](user-docs/contributing.md) for complete setup and release documentation.
 
 ## Contributing
 
