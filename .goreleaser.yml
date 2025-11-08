@@ -37,13 +37,13 @@ builds:
 archives:
   - format_overrides:
       - goos: linux
-        format: zip
+        formats: [zip]
       - goos: darwin
-        format: zip
+        formats: [zip]
       - goos: windows
-        format: zip
+        formats: [zip]
       - goos: freebsd
-        format: zip
+        formats: [zip]
     name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
 
 checksum:
