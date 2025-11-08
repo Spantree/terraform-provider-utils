@@ -30,10 +30,20 @@ builds:
     ignore:
       - goos: darwin
         goarch: '386'
+      - goos: windows
+        goarch: arm
     binary: '{{ .ProjectName }}_v{{ .Version }}'
 
 archives:
-  - format: zip
+  - format_overrides:
+      - goos: linux
+        format: zip
+      - goos: darwin
+        format: zip
+      - goos: windows
+        format: zip
+      - goos: freebsd
+        format: zip
     name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}'
 
 checksum:
